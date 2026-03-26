@@ -7,6 +7,7 @@ export default function PersonalInfoSection() {
   const { data, updatePersonalInfo } = useCV();
   const t = TRANSLATIONS[data.meta.language];
   const pi = data.personalInfo;
+  const isSr = data.meta.language === 'sr-Cyrl' || data.meta.language === 'sr-Latn';
 
   const field = (key: keyof typeof pi, label: string, opts?: {
     type?: string;
@@ -31,7 +32,10 @@ export default function PersonalInfoSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {field('firstName', t.firstName, { placeholder: '' })}
         {field('lastName', t.lastName, { placeholder: '' })}
-        {field('dateOfBirth', t.dateOfBirth, { type: 'date' })}
+        {field('dateOfBirth', t.dateOfBirth, {
+          type: 'text',
+          placeholder: isSr ? 'npr. 31.12.1998' : 'e.g. 1998-12-31',
+        })}
         {field('address', t.address, { placeholder: '' })}
         {field('phone', t.phone, { type: 'tel', placeholder: '+1 24 123 4567' })}
         {field('email', t.email, { type: 'email', placeholder: '' })}

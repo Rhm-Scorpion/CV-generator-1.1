@@ -21,8 +21,15 @@ interface Props {
 }
 
 export default function WorkSection({ onConfirmRemove }: Props) {
-  const { data, updateData, errors, validateField } = useCV();
+  const { data, updateData, errors, validateField, clearFieldError } = useCV();
   const t = TRANSLATIONS[data.meta.language];
+  const isSr = data.meta.language === 'sr-Cyrl' || data.meta.language === 'sr-Latn';
+
+  const normalizeMonthYearInput = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 6);
+    if (digits.length <= 2) return digits;
+    return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -73,14 +80,17 @@ export default function WorkSection({ onConfirmRemove }: Props) {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <InputField
                       label={t.from} path={`workExperience.${work.id}.from`}
-                      value={work.from} type="date"
-                      onChange={(val) => updateEntry(i, { from: val })}
+                      value={work.from}
+                      placeholder={isSr ? 'npr. 03/2024' : 'e.g. 03/2024'}
+                      onChange={(val) => updateEntry(i, { from: normalizeMonthYearInput(val) })}
                     />
                     <div>
                       <InputField
                         label={t.to} path={`workExperience.${work.id}.to`}
-                        value={work.to} type="date" disabled={work.toPresent}
-                        onChange={(val) => updateEntry(i, { to: val })}
+                        value={work.to}
+                        placeholder={isSr ? 'npr. 11/2025' : 'e.g. 11/2025'}
+                        disabled={work.toPresent}
+                        onChange={(val) => updateEntry(i, { to: normalizeMonthYearInput(val) })}
                       />
                       <div className="mt-1 flex items-center gap-1">
                         <input
@@ -88,12 +98,16 @@ export default function WorkSection({ onConfirmRemove }: Props) {
                           checked={work.toPresent}
                           onChange={(e) => {
                             updateEntry(i, { toPresent: e.target.checked, to: e.target.checked ? '' : work.to });
-                            validateField(`workExperience.${work.id}.to`, e.target.checked ? '' : work.to);
+                            if (e.target.checked) {
+                              clearFieldError(`workExperience.${work.id}.to`);
+                            } else {
+                              validateField(`workExperience.${work.id}.to`, work.to);
+                            }
                           }}
                           className="w-3 h-3 accent-accent"
                         />
                         <label htmlFor={`work-present-${work.id}`} className="text-[10px] text-gray-500 uppercase font-medium">
-                          {t.present}
+                          {t.currently || t.present}
                         </label>
                       </div>
                     </div>

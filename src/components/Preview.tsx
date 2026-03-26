@@ -3,9 +3,8 @@ import { useCV } from '../CVContext';
 import { TRANSLATIONS } from '../constants';
 import { CVDocument } from './CVDocument';
 import { PDFDownloadLink, PDFViewer, BlobProvider } from '@react-pdf/renderer';
-import { FileText, Download, X, Eye, Code, ExternalLink, AlertCircle, Printer } from 'lucide-react';
+import { FileText, Download, X, Eye, ExternalLink, AlertCircle, Printer } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { generateCVHtml } from '../lib/htmlGenerator';
 import { cn } from '../lib/utils';
 
 const printPdfFromUrl = (url: string | null) => {
@@ -102,19 +101,6 @@ export const Preview: React.FC = () => {
   const hasErrors = Object.keys(errors).length > 0;
   const floatingActionButtonClass = "flex-1 sm:flex-none h-12 sm:w-14 sm:h-14 px-3 sm:px-0 rounded-xl sm:rounded-full shadow-lg flex items-center justify-center gap-2 transition-transform sm:hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed";
 
-  const handleDownloadHtml = () => {
-    const html = generateCVHtml(data);
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `CV_${data.personalInfo.firstName}_${data.personalInfo.lastName}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <>
       <div
@@ -168,18 +154,6 @@ export const Preview: React.FC = () => {
             </>
           )}
         </PDFDownloadLink>
-
-        <button
-          onClick={handleDownloadHtml}
-          disabled={hasErrors}
-          className={cn(
-            floatingActionButtonClass,
-            "hidden sm:flex bg-blue-600 text-white"
-          )}
-          title={hasErrors ? "Please fix errors before downloading" : "Download HTML"}
-        >
-          <Code className="w-6 h-6" />
-        </button>
       </div>
 
       <AnimatePresence>
@@ -214,14 +188,6 @@ export const Preview: React.FC = () => {
               </div>
 
               <div className="p-4 border-t border-border-card bg-app-bg flex justify-end gap-4">
-                <button
-                  onClick={handleDownloadHtml}
-                  disabled={hasErrors}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-md font-bold flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Code className="w-4 h-4" />
-                  HTML
-                </button>
                 <PDFDownloadLink
                   document={<CVDocument data={data} />}
                   fileName={`CV_${data.personalInfo.firstName}_${data.personalInfo.lastName}.pdf`}

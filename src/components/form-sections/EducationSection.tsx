@@ -20,8 +20,14 @@ interface Props {
 }
 
 export default function EducationSection({ onConfirmRemove }: Props) {
-  const { data, updateData, validateField } = useCV();
+  const { data, updateData, validateField, clearFieldError } = useCV();
   const t = TRANSLATIONS[data.meta.language];
+  const isSr = data.meta.language === 'sr-Cyrl' || data.meta.language === 'sr-Latn';
+
+  const normalizeYearInput = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+    return digits;
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -71,14 +77,17 @@ export default function EducationSection({ onConfirmRemove }: Props) {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <InputField
                       label={t.from} path={`education.${edu.id}.from`}
-                      value={edu.from} type="date"
-                      onChange={(val) => updateEntry(i, { from: val })}
+                      value={edu.from}
+                      placeholder={isSr ? 'npr. 2022' : 'e.g. 2022'}
+                      onChange={(val) => updateEntry(i, { from: normalizeYearInput(val) })}
                     />
                     <div>
                       <InputField
                         label={t.to} path={`education.${edu.id}.to`}
-                        value={edu.to} type="date" disabled={edu.toPresent}
-                        onChange={(val) => updateEntry(i, { to: val })}
+                        value={edu.to}
+                        placeholder={isSr ? 'npr. 2026' : 'e.g. 2026'}
+                        disabled={edu.toPresent}
+                        onChange={(val) => updateEntry(i, { to: normalizeYearInput(val) })}
                       />
                       <div className="mt-1 flex items-center gap-1">
                         <input
@@ -86,12 +95,16 @@ export default function EducationSection({ onConfirmRemove }: Props) {
                           checked={edu.toPresent}
                           onChange={(e) => {
                             updateEntry(i, { toPresent: e.target.checked, to: e.target.checked ? '' : edu.to });
-                            validateField(`education.${edu.id}.to`, e.target.checked ? '' : edu.to);
+                            if (e.target.checked) {
+                              clearFieldError(`education.${edu.id}.to`);
+                            } else {
+                              validateField(`education.${edu.id}.to`, edu.to);
+                            }
                           }}
                           className="w-3 h-3 accent-accent"
                         />
                         <label htmlFor={`edu-present-${edu.id}`} className="text-[10px] text-gray-500 uppercase font-medium">
-                          {t.present}
+                          {t.currently || t.present}
                         </label>
                       </div>
                     </div>
