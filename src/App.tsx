@@ -1,4 +1,5 @@
 import React from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { CVProvider, useCV } from './CVContext';
 import { Header } from './components/Header';
 import { Form } from './components/Form';
@@ -42,6 +43,7 @@ export default function App() {
   return (
     <CVProvider>
       <AppContent />
+      <Analytics />
     </CVProvider>
   );
 }
