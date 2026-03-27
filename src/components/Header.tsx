@@ -38,6 +38,7 @@ export const Header: React.FC = () => {
 
       <div className="flex items-center gap-2 sm:gap-4">
         <button
+          type="button"
           onClick={() => setIsLivePreview(!isLivePreview)}
           className={cn(
             "hidden md:flex items-center gap-2 px-3 py-2 sm:px-4 rounded-full text-xs sm:text-sm font-bold transition-all",

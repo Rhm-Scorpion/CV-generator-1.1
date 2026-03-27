@@ -28,6 +28,7 @@ export default function SortableItem({ id, children, onRemove }: SortableItemPro
         </div>
         <div className="flex-1">{children}</div>
         <button
+          type="button"
           onClick={onRemove}
           className="absolute top-2 right-2 p-1 text-gray-400 hover:text-red-500 transition-colors"
         >

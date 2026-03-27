@@ -77,6 +77,7 @@ export default function LanguagesSection({ onConfirmRemove }: Props) {
                 </select>
               </div>
               <button
+                type="button"
                 onClick={() => removeEntry(entry.id)}
                 className="absolute top-0 right-0 sm:static sm:mb-1 p-2 text-gray-400 hover:text-red-500 transition-colors"
               >
@@ -85,7 +86,7 @@ export default function LanguagesSection({ onConfirmRemove }: Props) {
             </motion.div>
           ))}
         </AnimatePresence>
-        <button onClick={addEntry} className="btn-add py-2">
+        <button type="button" onClick={addEntry} className="btn-add py-2">
           <Plus className="w-4 h-4" /> {t.addLanguage}
         </button>
       </div>

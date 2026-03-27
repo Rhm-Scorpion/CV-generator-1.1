@@ -10,31 +10,65 @@ import { cn } from '../lib/utils';
 const printPdfFromUrl = (url: string | null) => {
   if (!url) return;
 
-  const iframe = document.createElement('iframe');
-  iframe.style.position = 'fixed';
-  iframe.style.width = '0';
-  iframe.style.height = '0';
-  iframe.style.border = '0';
-  iframe.src = url;
-  document.body.appendChild(iframe);
+  const printWindow = window.open('', '_blank', 'width=1024,height=768');
+  if (!printWindow) {
+    window.open(url, '_blank');
+    return;
+  }
 
   const cleanup = () => {
-    if (document.body.contains(iframe)) {
-      document.body.removeChild(iframe);
+    if (!printWindow.closed) {
+      printWindow.close();
     }
+  };
+
+  printWindow.document.title = 'Print CV';
+  printWindow.document.body.style.margin = '0';
+  printWindow.document.body.style.background = '#111827';
+
+  const iframe = printWindow.document.createElement('iframe');
+  iframe.style.width = '100vw';
+  iframe.style.height = '100vh';
+  iframe.style.border = '0';
+  iframe.src = url;
+  printWindow.document.body.appendChild(iframe);
+
+  const triggerPrint = () => {
+    printWindow.setTimeout(() => {
+      const iframeWindow = iframe.contentWindow;
+      if (!iframeWindow) {
+        printWindow.location.href = url;
+        return;
+      }
+
+      try {
+        iframeWindow.focus();
+        iframeWindow.print();
+      } catch {
+        printWindow.location.href = url;
+      }
+    }, 350);
   };
 
   iframe.onload = () => {
-    const iframeWindow = iframe.contentWindow;
-    if (!iframeWindow) {
-      cleanup();
+    triggerPrint();
+  };
+
+  printWindow.addEventListener(
+    'afterprint',
+    () => {
+      printWindow.setTimeout(cleanup, 150);
+    },
+    { once: true },
+  );
+
+  printWindow.setTimeout(() => {
+    if (printWindow.closed) {
       return;
     }
 
-    iframeWindow.focus();
-    iframeWindow.print();
-    setTimeout(cleanup, 1000);
-  };
+    triggerPrint();
+  }, 1500);
 };
 
 export const CVPreviewContent: React.FC<{ className?: string }> = ({ className }) => {
@@ -70,6 +104,7 @@ export const CVPreviewContent: React.FC<{ className?: string }> = ({ className }
         {({ url, loading }) => (
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={() => url && window.open(url, '_blank')}
               disabled={loading}
               className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-white border border-border-card rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
@@ -78,6 +113,7 @@ export const CVPreviewContent: React.FC<{ className?: string }> = ({ className }
               {lang === 'sr-Cyrl' || lang === 'sr-Latn' ? 'Отвори у новој картици' : 'Open in New Tab'}
             </button>
             <button
+              type="button"
               onClick={() => printPdfFromUrl(url)}
               disabled={loading}
               className="flex items-center justify-center gap-2 py-2 px-4 bg-white border border-border-card rounded-md text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
@@ -110,6 +146,7 @@ export const Preview: React.FC = () => {
         )}
       >
         <button
+          type="button"
           onClick={() => setIsOpen(true)}
           className={cn(
             floatingActionButtonClass,
@@ -124,6 +161,7 @@ export const Preview: React.FC = () => {
         <BlobProvider document={<CVDocument data={data} />}>
           {({ url, loading }) => (
             <button
+              type="button"
               onClick={() => printPdfFromUrl(url)}
               disabled={loading || hasErrors}
               className={cn(
@@ -176,6 +214,7 @@ export const Preview: React.FC = () => {
                   {t.preview}
                 </div>
                 <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-black/5 rounded-full transition-colors"
                 >

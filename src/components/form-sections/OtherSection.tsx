@@ -76,7 +76,7 @@ export default function OtherSection({ onConfirmRemove }: Props) {
         </div>
         <div className="md:col-span-1 flex justify-end">
           {entry && (
-            <button onClick={() => removeFixed(label)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+            <button type="button" onClick={() => removeFixed(label)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
               <Trash2 className="w-4 h-4" />
             </button>
           )}
@@ -118,7 +118,7 @@ export default function OtherSection({ onConfirmRemove }: Props) {
                 />
               </div>
               <div className="md:col-span-1 flex justify-end">
-                <button onClick={() => removeCustom(item.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                <button type="button" onClick={() => removeCustom(item.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -126,7 +126,7 @@ export default function OtherSection({ onConfirmRemove }: Props) {
           ))}
         </AnimatePresence>
 
-        <button onClick={addCustom} className="btn-add py-2">
+        <button type="button" onClick={addCustom} className="btn-add py-2">
           <Plus className="w-4 h-4" /> {t.addOther}
         </button>
       </div>

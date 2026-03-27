@@ -62,13 +62,13 @@ export default function SkillsSection({ onConfirmRemove }: Props) {
                   )}
                 </AnimatePresence>
               </div>
-              <button onClick={() => removeSkill(type, skill.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+              <button type="button" onClick={() => removeSkill(type, skill.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
                 <Trash2 className="w-4 h-4" />
               </button>
             </motion.div>
           ))}
         </AnimatePresence>
-        <button onClick={() => addSkill(type)} className="btn-add py-2 mt-2">
+        <button type="button" onClick={() => addSkill(type)} className="btn-add py-2 mt-2">
           <Plus className="w-3 h-3" /> {t.addSkill}
         </button>
       </div>

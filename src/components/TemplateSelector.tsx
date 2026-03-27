@@ -25,6 +25,7 @@ export const TemplateSelector: React.FC = () => {
         {templates.map((template) => (
           <button
             key={template.id}
+            type="button"
             onClick={() => setTemplate(template.id)}
             className={cn(
               "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all border",

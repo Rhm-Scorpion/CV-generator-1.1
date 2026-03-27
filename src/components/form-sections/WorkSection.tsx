@@ -163,7 +163,7 @@ export default function WorkSection({ onConfirmRemove }: Props) {
             </AnimatePresence>
           </SortableContext>
         </DndContext>
-        <button onClick={addEntry} className="btn-add">
+        <button type="button" onClick={addEntry} className="btn-add">
           <Plus className="w-4 h-4" /> {t.addWork}
         </button>
       </div>
