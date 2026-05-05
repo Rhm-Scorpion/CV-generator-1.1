@@ -14,4 +14,14 @@ export default defineConfig({
     host: '0.0.0.0',
     hmr: true,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 });
