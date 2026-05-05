@@ -27,7 +27,7 @@ Font.register({
   ]
 });
 
-const getStyles = (template: string) => {
+const getStyles = (template: 'modern' | 'classic' | 'minimalist') => {
   const baseStyles = {
     page: {
       padding: 40,
@@ -348,7 +348,7 @@ const formatDate = (dateStr: string, lang: string, type: 'full' | 'monthYear' = 
 
 export const CVDocument: React.FC<{ data: CVData }> = ({ data }) => {
   const lang = data.meta.language;
-  const template = data.meta.template || 'modern';
+  const template: 'modern' | 'classic' | 'minimalist' = data.meta.template || 'modern';
   const t = TRANSLATIONS[lang];
   const isRtl = lang === 'ar' || lang === 'he';
   const styles = getStyles(template);
@@ -553,7 +553,7 @@ export const CVDocument: React.FC<{ data: CVData }> = ({ data }) => {
                         <Text style={styles.entryTitle}>{work.employer}</Text>
                         <Text style={styles.entrySubtitle}>{work.jobTitle} | {work.city}, {work.country}</Text>
                         {work.description && (
-                          <View style={template === 'minimalist' ? styles.entryDescription : styles.description}>
+                          <View style={template === 'modern' || template === 'classic' ? styles.description : styles.entryDescription}>
                             {work.description.split(/[.!?]\s+/).map((sentence, sIdx, arr) => {
                               const text = sentence.trim();
                               if (!text) return null;
@@ -628,7 +628,7 @@ export const CVDocument: React.FC<{ data: CVData }> = ({ data }) => {
                     </View>
                     <Text style={styles.entrySubtitle}>{work.jobTitle} | {work.city}, {work.country}</Text>
                     {work.description && (
-                      <View style={template === 'minimalist' ? styles.entryDescription : styles.description}>
+                      <View style={template === 'modern' || template === 'classic' ? styles.description : styles.entryDescription}>
                         {work.description.split(/[.!?]\s+/).map((sentence, sIdx, arr) => {
                           const text = sentence.trim();
                           if (!text) return null;
